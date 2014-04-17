@@ -24,9 +24,9 @@ namespace Mvc3Examples.Helpers.Attributes
         /**
          * we allow a range of grades - comma separated
          */
-        public GradeRangeAttribute(IEnumerable<String> range) : base("{0} is out of range")
+        public GradeRangeAttribute(String range) : base("{0} is out of range")
         {
-            _range = range;
+            _range = range != null ? range.Split(',').AsEnumerable<String>() : new List<String>();
         }
 
         /**
@@ -58,7 +58,7 @@ namespace Mvc3Examples.Helpers.Attributes
 
     The grade range attribute is set like this:
     <pre class="prettyprint">
-        [GradeRange(new List<String>(){"A","B","C","D","F"}, ErrorMessage="not a valid grade")]
+        [GradeRange("A,B,C,D,F", ErrorMessage="not a valid grade")]
         public String Grade { get; set; }
     </pre>
 </p>
