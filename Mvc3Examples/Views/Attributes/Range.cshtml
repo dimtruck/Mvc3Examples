@@ -1,0 +1,35 @@
+﻿@model Mvc3Examples.Models.StudentViewModel
+
+@{
+    ViewBag.Title = "Range";
+}
+
+<h2>Range example</h2>
+
+<p>This example generates HTML form that maps the model attributes to Label, Editor, and ValidationMessage methods.
+    <pre class="prettyprint">
+        Html.EditorFor(model => model.Age) resolves to @Html.Encode(@Html.EditorFor(m => m.Age))
+    </pre>
+</p>
+
+<p>If you do not enter anything in the age textbox, the test will pass because the value is not required.
+    HOWEVER, if you enter a value that is not 5 digits, the value will be passed back to the backend, 
+    at which point model will run through a set of validations.  One of the validations will be StringLength, which 
+    will fail in this scenario.  You can check ModelState.IsValid to see whether the object is valid or not.
+    You can also check ModelState.Values collection.  This collection may contain Errors list, which will specify which ErrorMessage
+    was thrown.  This error message can be overwritten in the Range constructor as such:
+    <pre class="prettyprint">
+        [Range(18, 120)]
+    </pre>
+
+    Our validation attribute for this example is:
+    <pre class="prettyprint">
+        [Range(18, 120)]
+        public int Age { get; set; }
+    </pre>
+
+    The key that has the error message maps to the id of the HTML element where the required parameter was set to.  
+    Html.ValidationMessageFor(model => model.Name) will then take that error message and output it next to the Name id.
+</p>
+
+@Html.Partial("StudentViewModel", Model)

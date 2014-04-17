@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "Helpers menu";
+}
+
+<h2>Helpers examples</h2>
+
+<p>Every time you see htmlAttributes as a parameter option, it takes in a dynamic map of values that are mapped to HTML attributes.  As an example: {required= true, data_array = []} will map to required="true" data-array="[]" in the passed in HTML element</p>
+
+<ul>Link helpers
+    <li>Html.ActionLink creates a link based on action/controller combination 
+        <pre class="prettyprint">
+            Html.ActionLink("action link","HelpersAction","HelpersController") --&gt; @Html.Encode(@Html.ActionLink("action link","HelpersAction","HelpersController"))
+        </pre>
+    </li>
+    <li>Html.RouteLink creates a link based on route name
+        <pre class="prettyprint">
+            Html.RouteLink("route link", "HelpersRoute") --&gt; @Html.Encode(@Html.RouteLink("route link", "HelpersRoute"))
+        </pre>
+    </li>
+</ul>
+
+<ul>Display helpers
+    <li>Html.AntiForgeryToken that also takes in salt, domain, and path parameters.  Used for cross-site scripting defenses 
+        <pre class="prettyprint">
+            Html.AntiForgeryToken() --&gt; @Html.Encode(@Html.AntiForgeryToken())
+        </pre>
+    </li>
+    <li>Html.AttributeEncode takes in an attribute value and HTML encodes it.  It only cares about ",&,<,\
+        <pre class="prettyprint">
+            Html.AttributeEncode("\" & < \\ >") --&gt; @Html.Encode(@Html.AttributeEncode("\" & < \\ >"))
+        </pre>
+    </li>
+    <li>Html.BeginForm creates a form HTML element and maps it to proper action/controller values.  Goes together with Html.EndForm.  You can also wrap the entire thing with using keyword
+        <pre class="prettyprint">
+            Html.BeginForm() 
+            //form content 
+            Html.EndForm() --&gt; @{ using(Html.BeginForm()){}}
+        </pre>
+        You can also use Html.BeginRouteForm, which maps to a route
+    </li>
+    <li>Html.CheckBox creates a checkbox HTML element
+        <pre class="prettyprint">
+            Html.Checkbox("name") --&gt; @Html.Encode(@Html.CheckBox("name"))
+            Html.Checkbox("name", true) --&gt; @Html.Encode(@Html.CheckBox("name", true))
+        </pre>
+    </li>
+    <li>Html.DropDownList creates a select HTML element with passed in IEnumerable mapped to options in the element.
+        <pre class="prettyprint">
+            Html.DropDownList(
+                "value",
+                new List<SelectListItem>(){
+                    new SelectListItem(){
+                        Text= "option1", 
+                        Value = "value1"
+                    },
+                    new SelectListItem(){
+                        Text = "option2",
+                        Value = "value2"
+                    }
+                },"default value") -- &gt;
+            @Html.Encode(@Html.DropDownList(
+                "value",
+                new List<SelectListItem>(){
+                    new SelectListItem(){
+                        Text= "option1", 
+                        Value = "value1"
+                    },
+                    new SelectListItem(){
+                        Text = "option2",
+                        Value = "value2"
+                    }
+                },"default value"))
+        </pre>
+    </li>
+    <li>Html.Editor creates an input HTML element that maps to expression parameter and optionally a custom template.
+        <pre class="prettyprint">
+            Html.Editor("expression") --&gt; @Html.Encode(@Html.Editor("expression"))
+        </pre>
+    </li>
+    <li>Html.Encode returns an HTML encoded value
+        <pre class="prettyprint">
+            Html.Encode('this is a string') --&gt; @Html.Encode(@Html.Encode("<html>this is a string</html>"))
+        </pre> 
+    </li>
+    <li>Html.Hidden creates a hidden HTML element that generates passed in name and value parameters
+        <pre class="prettyprint">
+            Html.Hidden("name","value") --&gt; @Html.Encode(@Html.Hidden("name","value"))
+        </pre>
+    </li>
+    <li>Html.Label creates a label HTML element based on the passed in value 
+        <pre class="prettyprint">
+            Html.Label("value") --&gt; @Html.Encode(@Html.Label("value"))
+        </pre>
+    </li>
+    <li>Html.ListBox creates a multi-value select HTML element with passed in IEnumerable mapped to options in the element.
+        <pre class="prettyprint">
+            Html.ListBox("value",
+                new List<SelectListItem>(){
+                    new SelectListItem(){
+                        Text= "option1", 
+                        Value = "value1"
+                    },
+                    new SelectListItem(){
+                        Text = "option2",
+                        Value = "value2"
+                    }
+                },"default value") --&gt;
+            @Html.Encode(@Html.ListBox("value",
+                new List<SelectListItem>(){
+                    new SelectListItem(){
+                        Text= "option1", 
+                        Value = "value1"
+                    },
+                    new SelectListItem(){
+                        Text = "option2",
+                        Value = "value2"
+                    }
+                },"default value"))
+        </pre>
+    </li>
+    <li>Html.Password creates an input HTML element with type attribute set to password.
+        <pre class="prettyprint">
+            Html.Password("password") --&gt; @Html.Encode(@Html.Password("password"))
+        </pre>        
+    </li>
+    <li>Html.RadioButton creates a radio HTML element
+        <pre class="prettyprint">
+            Html.RadioButton("name","value") --&gt; @Html.Encode(@Html.RadioButton("name","value"))
+        </pre>        
+    </li>
+    <li>Html.Raw creates an unencoded string
+        <pre class="prettyprint">
+            Html.Raw("generates an unencoded string") --&gt; @Html.Encode(@Html.Raw("generates an unencoded string"))
+        </pre>         
+    </li>
+    <li>Html.TextArea creates a texarea HTML element
+        <pre class="prettyprint">
+            Html.TextArea("name") --&gt; @Html.Encode(@Html.TextArea("name"))
+        </pre>
+    </li>
+    <li>Html.TextBox creates an input HTML element with type attribute set to text 
+        <pre class="prettyprint">
+            Html.TextBox("text") --&gt; @Html.Encode(@Html.TextBox("text"))
+        </pre>        
+    </li>
+    <li>Custom Helper</li>
+</ul>
+      
+    
