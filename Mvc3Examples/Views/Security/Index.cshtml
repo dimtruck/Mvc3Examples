@@ -1,0 +1,199 @@
+﻿@{
+    ViewBag.Title = "Security menu";
+}
+
+<h2>Security examples</h2>
+
+<p>Authorized attribute allows you to specify who is allowed to access specific endpoints.  The cool thing is that you can specify roles and groups of users, giving you
+    huge amount of flexibility.
+
+    You can define the attribute on methods and controllers.
+</p>
+
+<ul>
+    <li>Example 1: define it on a method with default authorization  --&gt;
+        <pre class="prettyprint">
+        [Authorize]
+        public ActionResult SecretStuff()
+        {
+            return View();
+        }
+        </pre>
+        You will have to be authenticated to see secret stuff.  If you are not (do not have proper cookie or token assigned to you), you will be redirected to the login page. 
+        Try it out @Html.ActionLink("here","SecretStuff").
+        <p>
+            The way it works is when method is accessed, authorization logic runs first.  It first calls OnAuthorization method, which checks your cookie and validates that the information is correct.  If not, 
+            it redirects to a logon page as defined in web.config (the below example shows that the redirection will go to Security/LogOn
+            <pre class="prettyprint">
+                    &lt;authentication mode="Forms"&gt;
+                        &lt;forms loginUrl="~/Security/LogOn" timeout="2880" /&gt;
+                    &lt;/authentication&gt;
+            </pre>
+        </p>
+        <p>
+            To authenticate yourself, just enter user id and password in the authentication request above and click "Create".  The LogOn method looks like this (totally simple)
+            <pre class="prettyprint">
+        [HttpPost]
+        public ActionResult LogOn(AccountModel model, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                //valid model was passed in.  Create auth cookie!
+                FormsAuthentication.SetAuthCookie(model.Name, true);
+                return Redirect(returnUrl);
+            }
+            //unauthenticated!
+            //add an error
+            ModelState.AddModelError("", "The information provided is incorrect.");
+            return View(model);
+        }
+            </pre> 
+            If the information is valid, we set the cookie, persist it, and redirect to the correct View.  The next time you click on that link, it won't ask you to authenticate!
+        </p>
+    </li>
+    <li>Example 2: define it on a method with default authorization and users.  --&gt;
+        <p>
+            The difference between this example and the previous one is the introduction of users:
+        </p>
+        <pre class="prettyprint">
+        [Authorize(Users = "tommy")]
+        public ActionResult SuperDuperSecretStuff()
+        {
+            return View();
+        }
+        </pre>        
+        <p>
+            ASP.NET MVC creates an object called IPrincipal.  It represents the security context of the user on whose behalf the code is running, 
+            including that user's identity (IIdentity) and any roles to which they belong.
+            Default controller provides it in the User property.  The user attribute checks if the user you authenticated with matches any of the users provided in the Authorize attribute by checking User.Identity.Name.
+
+            @Html.ActionLink("Try it out","SuperDuperSecretStuff") by authenticating with "tommy" against user in the request and then with any other user.
+        </p>
+
+    </li>
+    <li>Example 3: define it on a method with default authorization and roles.  --&gt;
+        <p>
+            The difference between this example and the previous one is the introduction of roles:
+        </p>
+        <pre class="prettyprint">
+        [Authorize(Roles = "admin")]
+        public ActionResult SuperSecretStuff()
+        {
+            return View();
+        }
+        </pre>        
+        <p>
+            To check roles, you'll need to add a Application_PostAuthenticateRequest event in global.asax, which will allow you to add roles to GenericPrincipal object.
+            GenericPrincipal is just a default implementation of IPrincipal covered above.
+            <pre class="prettyprint">
+        protected void Application_PostAuthenticateRequest(Object sender, EventArgs e) {
+            //get the cookie here
+            HttpCookie authCookie = 
+                Context.Request.Cookies[FormsAuthentication.FormsCookieName];
+            if (authCookie != null  ) {
+                FormsAuthenticationTicket authTicket = 
+                                  FormsAuthentication.Decrypt(authCookie.Value);
+                string roles = "";
+                if(authTicket.UserData != null){
+                    AccountModel model = new JavaScriptSerializer().Deserialize<AccountModel>(authTicket.UserData);
+                    if(model != null && !String.IsNullOrEmpty(model.Role))
+                        roles = model.Role;
+                }
+                //user that represents the authenticated request
+                GenericPrincipal userPrincipal =
+                       new GenericPrincipal(new GenericIdentity(authTicket.Name), roles.Split(','));
+                Context.User = userPrincipal;
+            }
+        }
+            </pre>
+
+            The Roles are checked by validating that the role you passed into the GenericPrincipal is in the comma separated list in Authorized attribute. 
+            @Html.ActionLink("Try it out","SuperSecretStuff") by authenticating with "admin" role and then with any other role.
+        </p>
+
+    </li>
+    <li>Example 4: custom authorization.  --&gt;
+        <p>
+            You can also create your own authorization.  Just extend AuthorizedAttribute and override AuthorizeCore method.  Then reference it in your method.
+        </p>
+        <pre class="prettyprint">
+        [CustomAuthorized]
+        public ActionResult CustomStuff()
+        {
+            return View();
+        }
+        </pre>
+        <pre class="prettyprint" >
+namespace Mvc3Examples.Helpers.Attributes
+{
+    public class CustomAuthorizedAttribute : AuthorizeAttribute
+    {
+        protected override bool AuthorizeCore(HttpContextBase httpContext)
+        {
+            //check some stuff on httpcontext
+            IPrincipal user = httpContext.User;
+            if (user.IsInRole("my-custom-role"))
+                return true;
+            return false;
+        }
+    }
+}
+        </pre>       
+        <p>
+            @Html.ActionLink("Try it out","CustomStuff") by authenticating with "my-custom-role" role and then with any other role.
+        </p>
+
+    </li>
+</ul>
+
+<p>
+    Cross Site Request Forgery
+    
+    PRO TIP: include AntiForgeryToken on every form and validate it on http posts.
+
+    <pre class="prettyprint">
+        Html.AntiForgeryToken() creates @Html.Encode(@Html.AntiForgeryToken())
+    </pre>
+
+    <pre class="prettyprint">
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(FormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+    </pre>
+</p>
+
+<p>
+    Validate request is posted from the proper site:
+    <pre class="prettyprint">
+        public class IsPostedFromThisSiteAttribute : AuthorizeAttribute
+        {
+            public override void OnAuthorize(AuthorizationContext filterContext)
+            {
+                if (filterContext.HttpContext != null)
+                {
+                    //if referrer header is null, something is wrong
+                    if (filterContext.HttpContext.Request.UrlReferrer == null)
+                        throw new System.Web.HttpException("Invalid submission");
+                    //check the host name!
+                    if (filterContext.HttpContext.Request.UrlReferrer.Host !=
+                        "mysite.com")
+                        throw new System.Web.HttpException
+                            ("This form wasn't submitted from this site!");
+                }
+            }
+        }
+
+    </pre>
+</p>

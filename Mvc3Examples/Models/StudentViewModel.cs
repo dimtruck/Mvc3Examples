@@ -28,5 +28,8 @@ namespace Mvc3Examples.Models
         //this is a custom validation implemented in Helpers.Attributes
         [GradeRange("A,B,C,D,F", ErrorMessage="not a valid grade")]
         public String Grade { get; set; }
+
+        [GradeRangeClient("A,B,C,D,F", ErrorMessage = "not a valid grade")]
+        public String GradeClient { get; set; }
     }
 }

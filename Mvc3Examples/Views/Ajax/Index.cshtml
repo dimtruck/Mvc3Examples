@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Ajax Menu";
+}
+
+<h2>Ajax list</h2>
+
+<p>Every time you see htmlAttributes as a parameter option, it takes in a dynamic map of values that are mapped to HTML attributes.  As an example: {required= true, data_array = []} will map to required="true" data-array="[]" in the passed in HTML element</p>
+
+<ul>Link helpers
+    <li>Ajax.ActionLink creates a link based on action/controller combination 
+        <pre class="prettyprint">
+            Ajax.ActionLink("action link","HelpersAction","HelpersController") --&gt; @Html.Encode(@Ajax.ActionLink("action link", "AjaxAction", new AjaxOptions()
+                                                                                 {
+                                                                                     Confirm = "confirm_callback",
+                                                                                     HttpMethod = "post",
+                                                                                     LoadingElementId = "element_to_show_in_progress",
+                                                                                     OnFailure = "failure",
+                                                                                     OnSuccess = "success"
+                                                                                 }))
+        </pre>
+    </li>
+    <li>Ajax.RouteLink creates a link based on route name
+        <pre class="prettyprint">
+            Ajax.RouteLink("route link", "HelpersRoute") --&gt; @Html.Encode(@Ajax.RouteLink("route link", "AjaxRoute", null))
+        </pre>
+    </li>
+    <li>Form helpers
+        Ajax.BeginForm(AjaxOptions) will create an ajax form.  You can also add various properties in the AjaxOptions
+        <pre class="prettyprint">
+            Confirm --&gt; message to display in confirmation window when done
+            HttpMethod --&gt; 'get' or 'post'
+            InsertionMode --&gt; how to insert response into DOM element (InsertBefore, InsertAfter, or Replace)
+            LoadingElementId --&gt; what to display while ajax is loading
+            Url --&gt; request url
+            OnFailure --&gt; javascript function to call when ajax failed
+            OnSuccess --&gt; javascript function to call when ajax succeeded
+            UpdateTargetId --&gt; what DOM element to update
+
+        </pre>
+    </li>
+    <li>for client validation, MVC 3 provides jquery.validate and jquery.validate.unobtrusive libraries, where you can also add custom code.
+        On your custom attribute, also implement IClientValidatable and GetClientValidationRules
+        <pre class="prettyprint">
+    public class GradeRangeClientAttribute : ValidationAttribute, IClientValidatable
+    {
+        private readonly IEnumerable<String> _range;
+        /**
+         * we allow a range of grades - comma separated
+         */
+        public GradeRangeClientAttribute(String range)
+            : base("{0} is out of range")
+        {
+            _range = range != null ? range.Split(',').AsEnumerable<String>() : new List<String>();
+        }
+
+        /**
+         * this method must be overwritten with custom valid logic
+         */
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            //could be not required so check that the value is passed in first
+            if (value != null)
+            {
+                var valueAsString = value.ToString();
+                if (_range == null || !_range.Contains(valueAsString))
+                {
+                    //value is not in range of allowed grades.  error!
+                    var errorMessage = FormatErrorMessage(
+                        validationContext.DisplayName);
+                    return new ValidationResult(errorMessage);
+                }
+            }
+            //we passed!  success!
+            return ValidationResult.Success;
+
+        }
+
+        //custom validation on client side
+        public IEnumerable<ModelClientValidationRule> GetClientValidationRules(ModelMetadata metadata, ControllerContext context)
+        {
+            var rule = new ModelClientValidationRule();
+            rule.ErrorMessage = FormatErrorMessage(metadata.GetDisplayName());
+            rule.ValidationParameters.Add("graderangeclient", _range);
+            rule.ValidationType = "graderangeclient";
+            yield return rule;
+
+        }
+    }
+            
+        </pre>
+        <p>
+            The code that will be generated looks like this: 
+            <pre class="prettyprint">
+                &lt;input class="text-box single-line" data-val="true" data-val-graderangeclient="not a valid grade" data-val-graderangeclient-graderangeclient="System.String[]" id="GradeClient" name="GradeClient" type="text" value="" /&gt;
+            </pre>
+
+            To make this entire thing work, you'll also need to add an adapter and validation rule in javascript.
+            <pre class="prettyprint">
+                $.validator.unobtrusive.adapters.addSingleVal("graderangeclient", "graderangeclient");
+
+                $.validator.addMethod("graderangeclient", function (value, element, graderangeclient) {
+                      if (value) {
+                           if (!graderangeclient.contains(value)) {
+                               return false;
+                           }
+                      }
+                      return true;
+                 });
+            </pre>
+        </p>
+    </li>
+</ul>

@@ -95,13 +95,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AjaxController.cs" />
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\HelpersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Attributes\CustomAuthorizedAttribute.cs" />
     <Compile Include="Helpers\Attributes\GradeRangeAttribute.cs" />
+    <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\StudentViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -202,6 +206,14 @@
     <Content Include="Views\Attributes\Range.cshtml" />
     <Content Include="Views\Attributes\Remote.cshtml" />
     <Content Include="Views\Attributes\Custom.cshtml" />
+    <Content Include="Views\Security\Index.cshtml" />
+    <Content Include="Views\Security\LogOn.cshtml" />
+    <Content Include="Views\Security\SecretStuff.cshtml" />
+    <Content Include="Views\Security\SuperDuperSecretStuff.cshtml" />
+    <Content Include="Views\Security\SuperSecretStuff.cshtml" />
+    <Content Include="Views\Security\CustomStuff.cshtml" />
+    <Content Include="Views\Ajax\Index.cshtml" />
+    <Content Include="Views\Ajax\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
