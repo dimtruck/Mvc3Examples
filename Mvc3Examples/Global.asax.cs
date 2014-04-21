@@ -27,6 +27,18 @@ namespace Mvc3Examples
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapRoute(
+                "ConstraintsRoute",
+                "{constraint}/{controller}/{action}",
+                new { controller = "Helpers", action = "Index" },
+                new { constraint = "constraint" }
+            );
+            routes.MapRoute(
+                "IndexPageRoute",
+                " Index.html ",
+                new { controller = "Helpers", action = "Index" }
+            );
+
+            routes.MapRoute(
                 "HelpersRoute",
                 "Helpers/{action}",
                 new { controller = "Helpers", action = "Index" }
@@ -47,16 +59,45 @@ namespace Mvc3Examples
                 new { controller = "Ajax", action = "Index" }
             );
             routes.MapRoute(
+                "RoutingRoute",
+                "Routing/{action}",
+                new { controller = "Routing", action = "Index" }
+                );
+            routes.MapRoute(
+                "MvcAreasRoute",
+                "MvcAreas/{action}",
+                new { controller = "MvcAreas", action = "Index" }
+                );
+            routes.MapRoute(
                 "ValidateSchool",
                 "Attributes/{action}",
                 new { controller = "Attributes", action = "ValidateSchool" }
+            );
+            routes.MapRoute(
+                "ModelsRoute",
+                "Models/{action}",
+                new {controller = "Models", action = "Index"}
+            );
+            routes.MapRoute(
+                "ActionFiltersRoute",
+                "Models/{action}",
+                new { action = "Index"}
+            );
+            routes.MapRoute(
+                "ActionResultsRoute",
+                "ActionResults/{action}",
+                new { action = "Index"}
+            );
+            routes.MapRoute(
+                "TemplatesRoute",
+                "Templates/{action}",
+                new { action = "Index"}
             );
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
-
         }
 
         protected void Application_Start()

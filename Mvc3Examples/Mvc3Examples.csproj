@@ -99,6 +99,9 @@
     <Compile Include="Controllers\AttributesController.cs" />
     <Compile Include="Controllers\HelpersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ModelsController.cs" />
+    <Compile Include="Controllers\MvcAreasController.cs" />
+    <Compile Include="Controllers\RoutingController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -214,6 +217,9 @@
     <Content Include="Views\Security\CustomStuff.cshtml" />
     <Content Include="Views\Ajax\Index.cshtml" />
     <Content Include="Views\Ajax\Create.cshtml" />
+    <Content Include="Views\Routing\Index.cshtml" />
+    <Content Include="Views\MvcAreas\Index.cshtml" />
+    <Content Include="Views\Models\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

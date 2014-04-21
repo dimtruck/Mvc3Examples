@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Mvc Areas Menu";
+}
+
+<h2>Mvc Areas examples</h2>
+
+<p>Areas were introduced in MVC 3 to separate presentation layer for different parts of an application.  Areas allowed for design re-use while having 
+    completely different presentation concerns.  This allowed developers to work in the same project but worry about only their parts of the code.  Each area
+    has its own sets of controllers and views but still can reuse the same domain layer.  Areas are registered in application startup (Global.asax) and defines
+    separations in routing.
+    <pre class="prettyprint">
+        protected void Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+        }
+    </pre>    
+</p>
+
+<h3>Custom Areas</h3>
+<p>
+    When you register all areas in Application_Start, MVC will actually go through and try to find all areas that extended AreaRegistration class and map all routes 
+    for those areas.  A custom area would look something like this:
+    <pre class="prettyprint">
+        public class MvcAreasRegistration : AreaRegistration
+        {
+            public override string AreaName
+            {
+                get
+                {
+                    return "MvcAreas";
+                }
+            }
+            public override void RegisterArea(AreaRegistrationContext context)
+            {
+                context.MapRoute(
+                    "Default",
+                    "MvcAreas/{controller}/{action}/{id}",
+                    new { action = "Index", id = UrlParameter.Optional }
+                );
+            }
+        }
+    </pre>
+    The area will register the route to its own context, unlike in the routing examples, where all routes were registered to a global route collection.
+</p>

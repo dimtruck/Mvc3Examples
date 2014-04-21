@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "Routing Menu";
+}
+
+<h2>Routing list</h2>
+
+<p>There are various ways you can route in MVC 3.  The way routing works is you first set up a routing dictionary in Global.asax
+    <pre class="prettyprint">
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.MapRoute(
+                "HelpersRoute",
+                "Helpers/{action}",
+                new { controller = "Helpers", action = "Index" }
+            );
+            routes.MapRoute(
+                "AttributesRoute",
+                "Attributes/{action}",
+                new { controller = "Attributes", action = "Index" }
+            );
+            routes.MapRoute(
+                "SecurityRoute",
+                "Security/{action}",
+                new { controller = "Security", action = "Index" }
+            );
+            routes.MapRoute(
+                "AjaxRoute",
+                "Ajax/{action}",
+                new { controller = "Ajax", action = "Index" }
+            );
+            routes.MapRoute(
+                "RoutingRoute",
+                "Routing/{action}",
+                new { controller = "Routing", action = "Index" }
+                );
+    </pre>    
+    The end result is the following collection is built (usually on application startup).  Notice that each entry in collection is a Route object, which has a set
+    of Constrains (Dictionary), DataTokens (Dictionary), and Defaults.  You can also check the Results View that shows a key/value pairs of all value references.
+    <pre class="prettyprint">
+-		routes	Count = 8	System.Web.Routing.RouteCollection
++		[0]	{System.Web.Mvc.RouteCollectionExtensions.IgnoreRouteInternal}	System.Web.Routing.RouteBase {System.Web.Mvc.RouteCollectionExtensions.IgnoreRouteInternal}
+-		[1]	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
+-		[System.Web.Routing.Route]	{System.Web.Routing.Route}	System.Web.Routing.Route
++		base	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		Constraints	{System.Web.Routing.RouteValueDictionary}	System.Web.Routing.RouteValueDictionary
++		DataTokens	{System.Web.Routing.RouteValueDictionary}	System.Web.Routing.RouteValueDictionary
+-		Defaults	{System.Web.Routing.RouteValueDictionary}	System.Web.Routing.RouteValueDictionary
+		Count	2	int
++		Keys	Count = 2	System.Collections.Generic.Dictionary<string,object>.KeyCollection
++		Values	Count = 2	System.Collections.Generic.Dictionary<string,object>.ValueCollection
++		Non-Public members		
+-		Results View	Expanding the Results View will enumerate the IEnumerable	
++		[0]	{[controller, Helpers]}	System.Collections.Generic.KeyValuePair<string,object>
++		[1]	{[action, Index]}	System.Collections.Generic.KeyValuePair<string,object>
++		RouteHandler	{System.Web.Mvc.MvcRouteHandler}	System.Web.Routing.IRouteHandler {System.Web.Mvc.MvcRouteHandler}
+		Url	"Helpers/{action}"	string
++		Static members		
+-		Non-Public members		
++		base	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		_parsedRoute	{System.Web.Routing.ParsedRoute}	System.Web.Routing.ParsedRoute
+		_url	"Helpers/{action}"	string
+		RouteExistingFiles	true	bool
++		Non-Public members		
++		[2]	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		[3]	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		[4]	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		[5]	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		[6]	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		[7]	{System.Web.Routing.Route}	System.Web.Routing.RouteBase {System.Web.Routing.Route}
++		Raw View		
+    </pre>
+</p>
+
+<ul>
+    <li>
+        <h3>Routing via action/controller</h3>
+        <p>
+            Routing via action and controller is easy.
+            <pre class="prettyprint">
+Html.ActionLink("test link", "Action", "Controller") --&gt; @Html.Encode(@Html.ActionLink("test link", "Action", "Controller")) --&gt; it maps to the following routes:
+- Controller/Action
+- Controller/{action}
+- {controller}/Action
+- {controller}/{action}
+            </pre>
+        </p>
+    </li>
+    <li>
+        <h3>Routing by specifying route names</h3>
+        <pre class="prettyprint">
+Html.RouteLink("test link", "HelpersRoute") --&gt; @Html.Encode(@Html.RouteLink("test link", "HelpersRoute")) --&gt; it maps to only one route:
+            routes.MapRoute(
+                "HelpersRoute",
+                "Helpers/{action}",
+                new { controller = "Helpers", action = "Index" }
+            );
+- if the route key does not exist, a ArgumentException exception will be thrown.
+             e.g. A route named 'HelpedrsRoute' could not be found in the route collection.
+        </pre>
+    </li>
+    <li>
+        <h3>Re-mapping routes</h3>
+        <p>
+            If you want to remap a route to a specific page (e.g. Index.html) to a specific Controller/Action
+            <pre class="prettyprint">
+            routes.MapRoute(
+                "RandomPageRoute",
+                "RandomPage.html",
+                new { controller = "Helpers", action = "Index" }
+            );
+
+            </pre>
+            This way, all accesses to RandomPage.html redirects to HelpersController and Index method.
+        </p>
+    </li>
+    <li>
+        <h3>Ignoring various URIs for routing</h3>
+        <p>
+            You can ignore specific routes (for example, for ELMAH)
+            <pre class="prettyprint">
+                routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            </pre>
+            - this will ignore all routes to *.axd/* 
+        </p>
+    </li>
+    <li>
+        <h3>Constraints</h3>
+        <p>
+            Finally, you can add constraints to your routes.  It's the last parameter in the MapRoute function:
+            <pre class="prettyprint">
+            routes.MapRoute(
+                "ConstraintsRoute",
+                "{constraint}/{controller}/{action}",
+                new { controller = "Helpers", action = "Index" },
+                new { constraint = "constraint" }
+            );
+            - this will allow the route only execute if the contraint is equal to "constraint." Nothing else will execute this route!
+            </pre>
+        </p>
+    </li>
+</ul>
+<ol>Tips and tricks
+    <li>Remember to place most used routes on top</li>
+    <li>For speed - don't use string based route constraints</li>
+</ol>

@@ -19,3 +19,25 @@ c:\users\administrator\documents\visual studio 2012\Projects\Mvc3Examples\Mvc3Ex
 c:\users\administrator\documents\visual studio 2012\Projects\Mvc3Examples\Mvc3Examples\obj\Debug\Mvc3Examples.dll
 c:\users\administrator\documents\visual studio 2012\Projects\Mvc3Examples\Mvc3Examples\obj\Debug\Mvc3Examples.pdb
 c:\users\administrator\documents\visual studio 2012\Projects\Mvc3Examples\Mvc3Examples\obj\Debug\Mvc3Examples.csprojResolveAssemblyReference.cache
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\Mvc3Examples.dll.config
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\Mvc3Examples.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\Mvc3Examples.pdb
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\EntityFramework.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.Helpers.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.Mvc.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.Providers.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.Razor.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.WebPages.Deployment.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.WebPages.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.WebPages.Razor.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\EntityFramework.xml
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.Helpers.xml
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.Mvc.xml
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.Razor.xml
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.WebPages.xml
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.WebPages.Deployment.xml
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\bin\System.Web.WebPages.Razor.xml
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\obj\Debug\Mvc3Examples.csprojResolveAssemblyReference.cache
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\obj\Debug\Mvc3Examples.dll
+C:\Users\dimissa\Documents\GitHub\Mvc3Examples\Mvc3Examples\obj\Debug\Mvc3Examples.pdb

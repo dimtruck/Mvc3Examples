@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = "Models Menu";
+}
+
+<h2>Models examples</h2>
+
+<p>Models are tightly integrated into MVC lifecycle in MVC 3.  There's a lot of "magic" that goes on behind the scenes when working models with views and controllers.
+    <ol>
+        <li>All helper methods listed in the previous section map the model properties to HTML in the view.</li>
+        <li>You can creating your own model binding but implementing IModelBinder
+            <pre class="prettyprint">
+ public object BindModel(ControllerContext controllerContext,
+                             ModelBindingContext bindingContext) {
+         if (!String.IsNullOrEmpty(bindingContext.ModelName) &&
+             !bindingContext.ValueProvider.ContainsPrefix(bindingContext.ModelName)) {
+             if (!bindingContext.FallbackToEmptyPrefix)
+                 return null;
+             bindingContext = new ModelBindingContext {
+                 ModelMetadata = bindingContext.ModelMetadata,
+                 ModelState = bindingContext.ModelState,
+                 PropertyFilter = bindingContext.PropertyFilter,
+                 ValueProvider = bindingContext.ValueProvider
+             };
+         }
+         bindingContext.ModelMetadata.Model = new Point();
+         return new Point(
+             Get<int>(controllerContext, bindingContext, "X"),
+             Get<int>(controllerContext, bindingContext, "Y")
+         );
+     }
+    private TModel Get<tmodel>(ControllerContext controllerContext,
+                                 ModelBindingContext bindingContext,
+                                 string name) {
+         string fullName = name;
+         if (!String.IsNullOrWhiteSpace(bindingContext.ModelName))
+             fullName = bindingContext.ModelName + "." + name;
+         ValueProviderResult valueProviderResult =
+             bindingContext.ValueProvider.GetValue(fullName);
+         ModelState modelState = new ModelState { Value = valueProviderResult };
+         bindingContext.ModelState.Add(fullName, modelState);
+         ModelMetadata metadata = bindingContext.PropertyMetadata[name];
+         string attemptedValue = valueProviderResult.AttemptedValue;
+         if (metadata.ConvertEmptyStringToNull
+                 && String.IsNullOrWhiteSpace(attemptedValue))
+             attemptedValue = null;
+         TModel model;
+         bool invalidValue = false;
+         try
+         {
+             model = (TModel)valueProviderResult.ConvertTo(typeof(TModel));
+             metadata.Model = model;
+         }
+         catch (Exception)
+         {
+             model = default(TModel);
+             metadata.Model = attemptedValue;
+             invalidValue = true;
+         }
+         IEnumerable<modelvalidator> validators =
+             ModelValidatorProviders.Providers.GetValidators(
+                 metadata,
+                 controllerContext
+             );
+         foreach (var validator in validators)
+             foreach (var validatorResult in validator.Validate(bindingContext.Model))
+                 modelState.Errors.Add(validatorResult.Message);
+         if (invalidValue && modelState.Errors.Count == 0)
+             modelState.Errors.Add(
+                String.Format(
+                    "The value '{0}' is not a valid value for {1}.",
+                    attemptedValue,
+                    metadata.GetDisplayName()
+                )
+             );
+          return model;
+     }
+            </pre>
+        </li>
+        <li>A view can have a hard dependency on a model by adding a @@model Mvc3Examples.Models.StudentViewModel at the top of the page</li>
+        <li>A controller can bind the request object to a model by specifying the proper type of the class in the method parameter 
+            <pre class="prettyprint">
+                public ActionResult Required(StudentViewModel model)
+            </pre>
+        </li>
+        <li>If you don't want to let MVC bind, you can bind yourself by:
+            <pre class="prettyprint">
+                - using Request object:
+                    StudentViewModel student = new StudentViewModel();
+                    student.Name = Request.Form["Name"];
+            </pre>
+            <pre class="prettyprint">
+                - using FormCollections object as parameter:
+                    public ActionResult Required(StudentViewModel model){
+                        StudentViewModel student = new StudentViewModel();
+                        student.Name = values["Name"];
+                    }
+            </pre>
+        </li>
+        <li>
+            You can dependency inject your models with IModelBinderProvider 
+        </li>
+        <li>
+            You can validate your models via ModelValidatorProvider 
+        </li>
+    </ol>
+</p>
